@@ -48,17 +48,25 @@
 
         <!-- 药物经济学评分 -->
         <div class="drug-card__row">
-          <span class="drug-card__label">药经评分</span>
+          <span class="drug-card__label">
+            药经评分
+            <span class="drug-card__help" @click.stop="showQalyTip = !showQalyTip">?</span>
+          </span>
           <span class="drug-card__value">
-            <span class="drug-card__qaly">{{ drugInfo.qalyScore }}</span>
-            <span class="drug-card__explain">（{{ drugInfo.qalyExplain }}）</span>
+            <span class="drug-card__qaly-bar" :class="qalyLevel">
+              <span class="drug-card__qaly-fill" :style="{ width: (drugInfo.qalyScore * 100) + '%' }"></span>
+            </span>
+            <span class="drug-card__qaly-num">{{ drugInfo.qalyScore }}</span>
           </span>
         </div>
 
-        <!-- 参照药标准 -->
-        <div class="drug-card__row">
-          <span class="drug-card__label">参照药价格</span>
-          <span class="drug-card__value font-number">{{ formatPrice(drugInfo.referencePrice) }} 元</span>
+        <!-- QALY 通俗解释 -->
+        <div class="drug-card__qaly-tip" v-if="showQalyTip">
+          <p><strong>药物经济学评分</strong>：综合衡量"花多少钱买多少健康"的指标。</p>
+          <p>• <strong>0.8以上</strong>：物超所值，医保基金花得值。<br>
+          • <strong>0.65-0.8</strong>：在争议区间，需要谈判降价。<br>
+          • <strong>0.65以下</strong>：性价比偏低，必须大幅降价才能进目录。</p>
+          <p class="drug-card__qaly-tip-note">{{ drugInfo.qalyExplain }}</p>
         </div>
 
         <div class="drug-card__divider"></div>
@@ -93,9 +101,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
-defineProps({
+const props = defineProps({
   drugInfo: {
     type: Object,
     required: true,
@@ -115,6 +123,14 @@ defineProps({
 })
 
 const expanded = ref(false)
+const showQalyTip = ref(false)
+
+const qalyLevel = computed(() => {
+  if (!props.drugInfo?.qalyScore) return ''
+  if (props.drugInfo.qalyScore >= 0.8) return 'qaly--good'
+  if (props.drugInfo.qalyScore >= 0.65) return 'qaly--warn'
+  return 'qaly--bad'
+})
 
 function formatPrice(price) {
   if (price >= 10000) {
@@ -233,6 +249,82 @@ function formatPrice(price) {
   font-size: var(--font-size-sm);
   font-weight: 400;
   color: var(--color-text-tertiary);
+}
+
+.drug-card__help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-border);
+  color: var(--color-text-tertiary);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 2px;
+  transition: all 0.15s;
+}
+
+.drug-card__help:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* QALY 色条 */
+.drug-card__qaly-bar {
+  display: inline-flex;
+  width: 60px;
+  height: 8px;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.drug-card__qaly-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.qaly--good .drug-card__qaly-fill { background: #43a047; }
+.qaly--warn .drug-card__qaly-fill { background: #ff9800; }
+.qaly--bad .drug-card__qaly-fill { background: #e53935; }
+
+.drug-card__qaly-num {
+  font-family: var(--font-family-number);
+  font-weight: 700;
+  font-size: var(--font-size-md);
+}
+
+.qaly--good .drug-card__qaly-num { color: #43a047; }
+.qaly--warn .drug-card__qaly-num { color: #e65100; }
+.qaly--bad .drug-card__qaly-num { color: #e53935; }
+
+/* QALY 提示 */
+.drug-card__qaly-tip {
+  background: #f5f7fa;
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin: 4px 0 8px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+.drug-card__qaly-tip p {
+  margin-bottom: 4px;
+}
+
+.drug-card__qaly-tip-note {
+  color: var(--color-text-tertiary);
+  font-style: italic;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--color-border);
 }
 
 .drug-card__qaly {

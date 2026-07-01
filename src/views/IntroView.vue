@@ -14,7 +14,18 @@
         <AppointmentLetter
           :case-name="caseName"
           :drug-name="drugInfo.genericName"
+          :mission="missionText"
         />
+
+        <!-- 患者故事 -->
+        <div class="intro-view__story" v-if="drugInfo.patientStory">
+          <div class="intro-view__story-card">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="intro-view__story-quote">
+              <path d="M6 17l-3-5V5h8v7l-3 5H6zm10 0l-3-5V5h8v7l-3 5h-2z" fill="currentColor" opacity="0.3"/>
+            </svg>
+            <p>{{ drugInfo.patientStory }}</p>
+          </div>
+        </div>
 
         <!-- 分割线 -->
         <div class="intro-view__section-divider">
@@ -85,6 +96,15 @@ const caseName = computed(() =>
   caseSummary.value?.name || '未知案例'
 )
 
+const missionText = computed(() => {
+  const missions = {
+    'chronic-renewal-3': '你今天的任务：为2亿慢病患者的日常用药争取一个公平的续约价格。他们中的很多人，每天的"小蓝片"就是生活的底线。',
+    'rare-disease-1': '你今天的任务：为1200个罕见病患儿家庭争取最后一个希望。每一个百分点价格的让步，都意味着多一个孩子能站起来。',
+    'tumor-drug-2': '你今天的任务：代表国家医保，与全球肿瘤药巨头进行定价博弈。用14亿人的市场规模，为8.5万肿瘤患者争取一个全球最公平的价格。'
+  }
+  return missions[caseId.value] || ''
+})
+
 function startNegotiation() {
   gameStore.startCase(caseId.value)
   trackEvent(EventType.NEGOTIATION_START, { caseId: caseId.value })
@@ -113,6 +133,29 @@ onMounted(() => {
 .intro-view__content {
   flex: 1;
   padding-bottom: 100px; /* 为底部操作栏留空间 */
+}
+
+/* 患者故事 */
+.intro-view__story {
+  padding: 0 var(--spacing-base);
+  margin-top: -var(--spacing-md);
+}
+
+.intro-view__story-card {
+  position: relative;
+  background: linear-gradient(135deg, #fef9f0, #fff5f5);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.intro-view__story-quote {
+  color: var(--color-primary);
+  opacity: 0.2;
+  margin-bottom: var(--spacing-xs);
 }
 
 /* 分割线 */

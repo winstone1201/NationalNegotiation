@@ -41,6 +41,11 @@
         </div>
       </div>
 
+      <!-- 任务说明 -->
+      <div class="appointment__mission" v-if="mission">
+        <p>{{ mission }}</p>
+      </div>
+
       <!-- 底部签章 -->
       <div class="appointment__seal">
         <div class="appointment__seal-circle">
@@ -60,7 +65,8 @@ import gsap from 'gsap'
 
 defineProps({
   caseName: { type: String, default: '' },
-  drugName: { type: String, default: '' }
+  drugName: { type: String, default: '' },
+  mission: { type: String, default: '' }
 })
 
 const letterRef = ref(null)
@@ -220,6 +226,21 @@ onMounted(() => {
 .appointment__info-value {
   color: var(--color-text-primary);
   font-weight: 600;
+}
+
+/* 任务说明 */
+.appointment__mission {
+  border-top: 1px solid #d4c9a8;
+  padding-top: var(--spacing-base);
+  margin-bottom: var(--spacing-lg);
+}
+
+.appointment__mission p {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  text-align: center;
+  font-style: italic;
 }
 
 /* 签章 */

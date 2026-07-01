@@ -17,6 +17,7 @@ export function useDialogueEngine() {
   const history = ref([])
   const playerChoices = ref([])
   const currentPrice = ref(0)
+  const round1Price = ref(null)  // 第一轮结束时的价格，用于对比展示
 
   // === 初始化：传入案例数据 ===
   function init(caseData) {
@@ -185,13 +186,17 @@ export function useDialogueEngine() {
 
   // === 推进到下一回合 ===
   function _advanceToNextRound() {
+    // 记录第一轮结束时的价格
+    round1Price.value = currentPrice.value
+
     const nextRoundIndex = currentRound.value // 数组索引 = 当前回合号
     const nextRound = _caseData.value.rounds[nextRoundIndex]
 
     if (nextRound) {
       currentRound.value = nextRound.roundNumber
       if (nextRound.pharmaOpeningQuote) {
-        currentPrice.value = nextRound.pharmaOpeningQuote
+        // 保留R1砍价成果：新报价不能高于当前已谈下来的价格
+        currentPrice.value = Math.min(currentPrice.value, nextRound.pharmaOpeningQuote)
       }
 
       currentNode.value = {
@@ -223,7 +228,7 @@ export function useDialogueEngine() {
     const roundData = _caseData.value.rounds[currentRound.value - 1]
     const floorPrice = roundData?.floorPrice || 0
     const finalPrice = currentPrice.value
-    const success = finalPrice <= floorPrice * 1.15
+    const success = finalPrice <= floorPrice
     const initialPrice = _caseData.value.drugInfo?.initialPrice || 1
     const discountPercent = Math.round((1 - finalPrice / initialPrice) * 100)
 
@@ -231,9 +236,12 @@ export function useDialogueEngine() {
       success,
       floorPrice,
       finalPrice,
-      threshold: Math.round(floorPrice * 1.15),
+      threshold: floorPrice,
       discountPercent: `${discountPercent}%`,
-      realResult: _caseData.value.realResult || null
+      realResult: _caseData.value.realResult || null,
+      round1Price: round1Price.value,
+      round1Opening: _caseData.value.rounds[0]?.pharmaOpeningQuote || 0,
+      round2Opening: _caseData.value.rounds[1]?.pharmaOpeningQuote || 0
     }
   }
 
@@ -243,6 +251,7 @@ export function useDialogueEngine() {
     history,
     playerChoices,
     currentPrice,
+    round1Price,
     isWaitingForChoice,
     isEnvelopeRevealed,
     isNegotiationEnded,

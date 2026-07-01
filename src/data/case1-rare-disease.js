@@ -1,6 +1,8 @@
 /**
  * 案例二：罕见病救命药 - 完整对话树
  * 难度：中等 | 情感主轴 | 患者家属来电
+ * 药企人格：情感矛盾型 —— 真心在乎患者，但被公司利润要求束缚
+ * 结构：2轮 + 电话事件，R2为2选项硬分叉
  */
 export const case1Dialogue = {
   round1: {
@@ -10,24 +12,24 @@ export const case1Dialogue = {
       nodeId: 'r1_start',
       speaker: 'pharma',
       speakerName: '诺华制药代表',
-      text: 'Spinraza是目前全球唯一获批的SMA治疗药物。我们理解中国患者的需求，但研发成本是不得不考虑的因素——这个药物从基础研究到上市用了18年，耗资超过20亿美元。我们的初始报价：每支12万元。',
+      text: 'Spinraza是目前全球唯一获批的SMA治疗药物。我们很清楚中国患者的需求——我们收到过很多中国家庭的来信，也见过那些孩子的照片。但研发的现实是：这个药从基础研究走到今天用了整整18年，投入超过20亿美元。我们的初始报价是每支12万元。我知道这个数字听起来很高，但请理解——当全球只有6万名患者时，每一支药背后分摊的研发成本是一个天文数字。',
       emotion: 'confident',
       options: [
         {
-          id: 'A', type: 'pressure', label: '施压型',
-          text: '12万元一支？贵方在澳大利亚定价折合人民币不到6万。为什么中国患者需要支付双倍？',
+          id: 'A', type: 'pressure', label: '价格质疑',
+          text: '12万元一支？你们在澳大利亚的定价折合人民币还不到6万。为什么中国患者要付双倍的价钱？请解释这个差距。',
           nextNode: 'r1_pressure_response',
           effects: { priceChange: -15000 }
         },
         {
-          id: 'B', type: 'empathy', label: '情理型',
-          text: '我桌上放着全国1200名SMA患儿名单，最小的只有8个月大。如果不能尽快入医保，这些孩子中的大多数等不到明年。',
+          id: 'B', type: 'empathy', label: '患者优先',
+          text: '我桌上放着全国1200名SMA患儿的名单，最小的只有8个月大。如果不能尽快纳入医保，这些孩子中的大多数等不到明年。今天我不是来砍价的——我是来处理一场公共卫生危机。',
           nextNode: 'r1_empathy_response',
           effects: { priceChange: -8000 }
         },
         {
-          id: 'C', type: 'technical', label: '技术型',
-          text: '以Spinraza的QALY值计算，合理价格区间应在5-7万元。12万远超常规阈值，请提供论证依据。',
+          id: 'C', type: 'technical', label: '价值分析',
+          text: '根据国际通用的"性价比"测算模型，这个药每帮患者延长一年高质量生命，合理花费应该在5-7万元。12万远超这个范围——请贵方提供你们自己的测算依据。',
           nextNode: 'r1_technical_response',
           effects: { priceChange: -12000 }
         }
@@ -38,7 +40,7 @@ export const case1Dialogue = {
       nodeId: 'r1_pressure_response',
       speaker: 'pharma',
       speakerName: '诺华制药代表',
-      text: '（略显不悦）各国的定价受市场规模、人均收入、物流成本等多重因素影响，不能简单横向比较。而且——恕我直言——如果中国市场的定价被压得过低，向全球药企传递的信号将是负面的：投入20亿美元研发的罕见病药物，在最大的新兴市场得不到合理回报。这对未来所有罕见病药物的研发热情都是一种打击。不过——我方愿意在第二轮给出更有竞争力的报价。',
+      text: '（略显不悦，但控制住了情绪）各国的定价受市场规模、物流成本等多种因素影响，不能简单比较。澳大利亚有政府专项罕见病基金补贴，而中国市场需要我们自己承担全部商业风险。（停顿）但我理解你的立场。请给我们内部讨论的时间，第二轮我们会拿出更有诚意的方案。',
       emotion: 'defensive',
       isEndOfRound: true
     },
@@ -47,7 +49,7 @@ export const case1Dialogue = {
       nodeId: 'r1_empathy_response',
       speaker: 'pharma',
       speakerName: '诺华制药代表',
-      text: '（沉默片刻）我们也收到过很多中国患者家庭的来信。以患者为中心是我们企业的核心价值观。请给我们一些时间内部讨论，第二轮我们会认真考虑一个更具可及性的方案。',
+      text: '（沉默了好一会儿，声音变轻了）8个月大……这个数字让我很难受。以患者为中心是我们做这个药的初衷——不是为了利润，是因为我们见过那些孩子的眼睛。（整理了一下情绪）请给我们一些时间，第二轮我们会认真考虑一个更可及的价格方案。',
       emotion: 'sympathetic',
       isEndOfRound: true
     },
@@ -56,7 +58,7 @@ export const case1Dialogue = {
       nodeId: 'r1_technical_response',
       speaker: 'pharma',
       speakerName: '诺华制药代表',
-      text: '（翻阅资料）贵方的模型需要更新——Spinraza的研发周期长达18年，早期失败项目成本也需要摊销。不过——（合上文件）我们承认报价空间存在，第二轮调整。',
+      text: '（认真翻阅资料）贵方的测算框架很专业，但有一个盲点：Spinraza的研发周期长达18年，其中前12年都是在试错——那些失败的项目成本，在"性价比"模型里是算不进去的。不过——（合上文件，语气诚恳）我承认12万的报价确实有调整空间。第二轮我们拿出诚意。',
       emotion: 'defensive',
       isEndOfRound: true
     }
@@ -69,26 +71,20 @@ export const case1Dialogue = {
       nodeId: 'r2_start',
       speaker: 'pharma',
       speakerName: '诺华制药代表',
-      text: '经过内部紧急讨论，我们决定将价格调整至每支8万元。这是我们基于中国市场特殊性给出的诚意价格。',
+      text: '（神情比上一轮更加严肃）我跟总部通了紧急电话。经过讨论，我们决定将价格调整至每支8万元。这是我们基于中国市场的特殊情况能做出的最大诚意了。坦率地说，再往下降，每一支药都将在亏损——全球没有任何一个市场有这个先例。',
       emotion: 'conciliatory',
       options: [
         {
-          id: 'A', type: 'pressure', label: '施压型',
-          text: '8万仍在底价之上。如果贵方不能降至6万以内，我们只能遗憾终止谈判。1200个家庭在等我们的结果。',
+          id: 'A', type: 'pressure', label: '坚守底线（高风险）',
+          text: '8万还是太高。如果贵方不能降至6万以内，我只能遗憾地终止今天的谈判。这不是威胁——1200个家庭在等我的结果，我没有退路。',
           nextNode: 'r2_pressure_response',
-          effects: { priceChange: -25000 }
+          effects: { priceChange: -28000 }
         },
         {
-          id: 'B', type: 'empathy', label: '情理型',
-          text: '今早我接到一位SMA患儿母亲的电话。孩子3岁了还不能独坐。她说："谈判官，我们不是要免费，只是想要一个希望。"',
+          id: 'B', type: 'empathy', label: '寻求合作（稳妥）',
+          text: '我接到了一位SMA患儿母亲的电话。她的孩子3岁了还不能独坐。她说："谈判官，我们不是要免费，只是想要一个希望。"如果贵方今天能把价格降到患者真正可及的程度——我愿意在后续推动建立患者援助计划，让这个药不是进了目录就完事，而是真正用到每个需要的孩子身上。',
           nextNode: 'r2_empathy_response',
-          effects: { priceChange: -20000 }
-        },
-        {
-          id: 'C', type: 'technical', label: '技术型',
-          text: '测算显示合理支付标准约5.5万。考虑全球定价体系，我们可在6.3万（底价×1.15）内接受。请斟酌。',
-          nextNode: 'r2_technical_response',
-          effects: { priceChange: -22000 }
+          effects: { priceChange: -25000 }
         }
       ]
     },
@@ -97,8 +93,8 @@ export const case1Dialogue = {
       nodeId: 'r2_pressure_response',
       speaker: 'pharma',
       speakerName: '诺华制药代表',
-      text: '（长时间沉默，与团队低声用英语交流）……这是一个非常艰难的决定。在全球任何市场，我们都没有在单个谈判中做出如此大的让步。但考虑到中国SMA患儿的迫切需求，我们同意。这是最终报价。同时我想坦诚地说：未来，当我们在董事会讨论下一个罕见病药物的研发预算时，今天的谈判结果会被作为一个参考案例。我们真诚希望，罕见病药物的创新之路不会因为定价压力而越走越窄。',
-      emotion: 'conciliatory',
+      text: '（脸色变了，与团队成员用英语低声争论了近一分钟。气氛极度紧张。）……这是我从业二十年来最艰难的谈判。6万以内——（深吸一口气）这个要求在全球任何董事会都会被直接否决。但如果我今天说不，那些孩子就真的没有机会了。好。我向总部承担这个决定的风险。这是我们的最终报价。',
+      emotion: 'defensive',
       triggerEnvelope: true
     },
 
@@ -106,17 +102,8 @@ export const case1Dialogue = {
       nodeId: 'r2_empathy_response',
       speaker: 'pharma',
       speakerName: '诺华制药代表',
-      text: '（眼眶微红）那个电话……让我想起最初研发这个药物的初心。不是为了利润——是因为我们见过那些孩子的眼睛。请听最终报价。我们愿意为了这些孩子做出超出常规决策的让步。',
+      text: '（眼眶微微发红，声音有些沙哑）那个电话……让我想起我们研发团队里的一位科学家。她花了整整15年做这个药，她办公桌上一直放着一张SMA患儿的照片。（停顿了很久）你说得对，进了目录不是终点。患者援助计划这个提议很有价值——我们愿意为了这些孩子，做出超出常规的让步。这是最终报价。',
       emotion: 'sympathetic',
-      triggerEnvelope: true
-    },
-
-    r2_technical_response: {
-      nodeId: 'r2_technical_response',
-      speaker: 'pharma',
-      speakerName: '诺华制药代表',
-      text: '测算非常精准。说实话，6.3万已经接近我们的全球最低价。但中国罕见病市场的特殊意义——以及贵方展现的专业态度——让我们愿意接受。这是最终报价。',
-      emotion: 'confident',
       triggerEnvelope: true
     }
   }

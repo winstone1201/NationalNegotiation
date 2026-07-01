@@ -31,7 +31,21 @@
       "Bash(cp -r \"NationalNegotiation-main\"/* .)",
       "Bash(cp -r \"NationalNegotiation-main\"/.* .)",
       "Bash(rm -rf \"NationalNegotiation-main\")",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(python3 -c \"import olefile; print\\('olefile available'\\)\")",
+      "Bash(antiword *)",
+      "Bash(pip install *)",
+      "Bash(python3)",
+      "Bash(python3 -c \"from docx import Document; print\\('ok'\\)\")",
+      "Bash(/d/Python312/python generate_report.py)",
+      "Bash(npm run *)",
+      "Bash(pip list *)",
+      "WebSearch",
+      "Bash(python -c ' *)",
+      "Bash(python -m edge_tts --ssml mother-speech.xml --write-media mother-message.mp3)",
+      "Bash(python *)",
+      "WebFetch(domain:dev.creazilla.com)",
+      "Bash(ffmpeg -y -i public/audio/wechat-ringtone.wav -b:a 128k public/audio/wechat-ringtone.mp3)"
     ]
   }
 }

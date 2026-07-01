@@ -10,25 +10,27 @@
 
       <div class="negotiation-view__status">
         <span class="negotiation-view__round">第 {{ engine.currentRound.value }} 轮谈判</span>
+        <span class="negotiation-view__divider">|</span>
+        <span class="negotiation-view__floor-label">医保底价</span>
+        <span class="negotiation-view__floor-value" v-if="showPreEnvelope">？？？</span>
+        <span class="negotiation-view__floor-value font-number" v-else>{{ formatFloorPrice(caseData?.rounds?.[0]?.floorPrice || 0) }}</span>
       </div>
-
-      <FundBar :current="fundCurrent" :max="fundMax" :min="0" />
     </div>
 
     <!-- 错误状态 -->
-    <div class="negotiation-view__error" v-if="initError">
+    <div class="negotiation-view__error" v-if="initError && !showPreEnvelope">
       <p>⚠️ 谈判数据加载失败</p>
       <button @click="retryInit">重试</button>
       <button @click="goHome">返回首页</button>
     </div>
 
     <!-- 加载/数据缺失 -->
-    <div class="negotiation-view__loading" v-else-if="!engine.currentNode.value">
+    <div class="negotiation-view__loading" v-else-if="!engine.currentNode.value && !showPreEnvelope && !initError">
       <LoadingScreen message="正在准备谈判..." />
     </div>
 
     <!-- 谈判主区域 -->
-    <template v-else>
+    <template v-else-if="!showPreEnvelope && engine.currentNode.value">
       <div class="negotiation-view__dialogue-area" ref="dialogueAreaRef">
         <!-- 历史对话 -->
         <div v-for="(msg, idx) in engine.history.value" :key="idx" class="negotiation-view__message">
@@ -81,17 +83,38 @@
       :caller-name="phoneCallData?.callerName || ''"
       :caller-relation="phoneCallData?.callerRelation || ''"
       :message="phoneCallData?.message || ''"
+      :audio-src="phoneCallData?.audioSrc || ''"
       @accepted="onPhoneAccepted"
-      @dismissed="showPhoneCall = false"
+      @dismissed="onPhoneDismissed"
     />
 
-    <!-- 信封揭晓 -->
+    <!-- 谈判前：拆封底价信封 -->
     <EnvelopeReveal
+      mode="pre"
+      :visible="showPreEnvelope"
+      :floor-price="caseData?.rounds?.[0]?.floorPrice || 0"
+      @revealed="onPreEnvelopeRevealed"
+    />
+
+    <!-- 第一轮结束：底价对比 -->
+    <EnvelopeReveal
+      mode="round1"
+      :visible="showRound1Check"
+      :floor-price="caseData?.rounds?.[0]?.floorPrice || 0"
+      :round1-price="engine.round1Price.value || 0"
+      @continue="onRound1CheckContinue"
+    />
+
+    <!-- 谈判后：价格对比 -->
+    <EnvelopeReveal
+      mode="post"
       :visible="engine.isEnvelopeRevealed.value"
       :floor-price="envelopeResult?.floorPrice || 0"
       :pharma-final-price="envelopeResult?.finalPrice || 0"
       :is-success="envelopeResult?.success || false"
-      @reveal="onEnvelopeRevealed"
+      :round1-opening="envelopeResult?.round1Opening || 0"
+      :round1-price="envelopeResult?.round1Price || 0"
+      :round2-opening="envelopeResult?.round2Opening || 0"
       @continue="goToResult"
     />
 
@@ -119,7 +142,6 @@ import LoadingScreen from '@/components/common/LoadingScreen.vue'
 import ModalOverlay from '@/components/common/ModalOverlay.vue'
 import DialogueBox from '@/components/negotiation/DialogueBox.vue'
 import ChoicePanel from '@/components/negotiation/ChoicePanel.vue'
-import FundBar from '@/components/negotiation/FundBar.vue'
 import PhoneCallEffect from '@/components/negotiation/PhoneCallEffect.vue'
 import EnvelopeReveal from '@/components/negotiation/EnvelopeReveal.vue'
 
@@ -137,11 +159,10 @@ const dialogueAreaRef = ref(null)
 const currentDialogueRef = ref(null)
 const choiceDisabled = ref(false)
 const showPhoneCall = ref(false)
+const showPreEnvelope = ref(true)
+const showRound1Check = ref(false)
 const showExitConfirm = ref(false)
 const initError = ref(false)
-
-const fundCurrent = ref(70)
-const fundMax = ref(70)
 
 // === 计算属性 ===
 const currentDisplayNode = computed(() => engine.currentNode.value)
@@ -175,8 +196,6 @@ function doInit() {
   }
 
   initError.value = false
-  fundCurrent.value = 70
-  fundMax.value = 70
 
   console.log('[NegotiationView] 初始化完成, caseId:', caseId.value)
 }
@@ -187,8 +206,21 @@ function retryInit() {
 
 onMounted(() => {
   trackPageView('Negotiation', { caseId: caseId.value })
-  doInit()
+  // 先加载数据但不开始谈判——等用户拆封底价信封后再开始
+  const data = getNegotiationCase(caseId.value)
+  if (!data) {
+    console.error('[NegotiationView] 找不到案例:', caseId.value)
+    initError.value = true
+    return
+  }
+  caseData.value = data
+  initError.value = false
 })
+
+function onPreEnvelopeRevealed() {
+  showPreEnvelope.value = false
+  doInit()
+}
 
 // === 对话流程 ===
 function onDialogueComplete() {
@@ -221,9 +253,16 @@ function advanceDialogue() {
   const node = currentDisplayNode.value
   if (!node) return
 
-  // 检查是否需要触发患者来电
+  // R1 结束：先展示底价对比（需先保存R1价格，因为此时引擎尚未推进）
+  if (node.isEndOfRound && engine.currentRound.value === 1) {
+    engine.round1Price.value = engine.currentPrice.value
+    showRound1Check.value = true
+    return
+  }
+
+  // 后续回合结束：检查是否需要触发患者来电
   if (node.isEndOfRound) {
-    const nextRoundIdx = engine.currentRound.value // 下一回合的数组索引
+    const nextRoundIdx = engine.currentRound.value
     const nextRound = caseData.value?.rounds?.[nextRoundIdx]
     if (nextRound?.triggerPhoneCall) {
       showPhoneCall.value = true
@@ -231,6 +270,18 @@ function advanceDialogue() {
     }
   }
 
+  engine.advanceDialogue()
+  nextTick(() => scrollToBottom())
+}
+
+function onRound1CheckContinue() {
+  showRound1Check.value = false
+  // 检查第二回合是否有来电
+  const nextRound = caseData.value?.rounds?.[1]
+  if (nextRound?.triggerPhoneCall) {
+    showPhoneCall.value = true
+    return
+  }
   engine.advanceDialogue()
   nextTick(() => scrollToBottom())
 }
@@ -258,14 +309,18 @@ function handleChoice(option) {
 }
 
 function onPhoneAccepted() {
-  setTimeout(() => {
-    showPhoneCall.value = false
-    engine.advanceDialogue()
-    nextTick(() => scrollToBottom())
-  }, 2500)
+  // 用户接听后，等待语音播放完毕或用户挂断
+  // 实际推进由 onPhoneDismissed 处理
 }
 
-function onEnvelopeRevealed() {
+function onPhoneDismissed() {
+  showPhoneCall.value = false
+  engine.advanceDialogue()
+  nextTick(() => scrollToBottom())
+}
+
+// === 导航 ===
+function goToResult() {
   const result = envelopeResult.value
   if (result) {
     trackComplete(caseId.value, result)
@@ -278,10 +333,6 @@ function onEnvelopeRevealed() {
       score
     })
   }
-}
-
-// === 导航 ===
-function goToResult() {
   router.push({ name: 'Result', params: { caseId: caseId.value } })
 }
 
@@ -294,6 +345,14 @@ function doExit() {
 
 function goHome() {
   router.push({ name: 'Home' })
+}
+
+function formatFloorPrice(price) {
+  if (price >= 10000) {
+    const wan = price / 10000
+    return (wan % 1 === 0 ? wan.toFixed(0) : wan.toFixed(1)) + '万'
+  }
+  return price.toFixed(2)
 }
 
 function scrollToBottom() {
@@ -338,7 +397,7 @@ function scrollToBottom() {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
 }
 
 .negotiation-view__round {
@@ -348,6 +407,22 @@ function scrollToBottom() {
   padding: 4px 12px;
   background: var(--color-primary-ghost);
   border-radius: 12px;
+}
+
+.negotiation-view__divider {
+  color: var(--color-border);
+  font-size: var(--font-size-sm);
+}
+
+.negotiation-view__floor-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+.negotiation-view__floor-value {
+  font-size: var(--font-size-md);
+  font-weight: 900;
+  color: #c0392b;
 }
 
 /* 错误/加载 */

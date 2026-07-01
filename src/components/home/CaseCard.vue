@@ -5,13 +5,20 @@
       'case-card--completed': completed,
       'case-card--locked': locked
     }"
+    :style="cardStyle"
     @click="handleClick"
   >
+    <!-- 装饰图标 -->
+    <div class="case-card__icon" v-if="visualTheme?.icon">{{ visualTheme.icon }}</div>
+
     <!-- 顶部标签区 -->
     <div class="case-card__tags">
       <span class="case-card__index">NO.{{ index }}</span>
       <span class="case-card__difficulty" :class="'case-card__difficulty--' + difficulty">
         {{ difficultyLabel }}
+      </span>
+      <span class="case-card__theme-label" v-if="visualTheme?.label" :style="{ color: visualTheme.accentColor }">
+        {{ visualTheme.label }}
       </span>
       <span class="case-card__time">
         <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
@@ -19,10 +26,6 @@
           <path d="M7 4v3l2 2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
         </svg>
         {{ estimatedTime }}
-      </span>
-      <!-- 折扣角标 -->
-      <span class="case-card__discount" v-if="!completed && !locked">
-        <span class="case-card__discount-icon">⚡</span>砍
       </span>
     </div>
 
@@ -76,7 +79,8 @@ const props = defineProps({
   difficulty: { type: String, default: 'medium' },
   estimatedTime: { type: String, default: '5分钟' },
   completed: { type: Boolean, default: false },
-  locked: { type: Boolean, default: false }
+  locked: { type: Boolean, default: false },
+  visualTheme: { type: Object, default: null }
 })
 
 const emit = defineEmits(['select'])
@@ -88,6 +92,15 @@ const difficultyLabel = computed(() => {
     hard: '高难'
   }
   return labels[props.difficulty] || '进阶'
+})
+
+const cardStyle = computed(() => {
+  if (!props.visualTheme) return {}
+  return {
+    background: props.visualTheme.gradient,
+    '--card-accent': props.visualTheme.accentColor,
+    '--card-bar': props.visualTheme.barColor
+  }
 })
 
 function handleClick() {
@@ -158,11 +171,27 @@ function handleClick() {
   margin-bottom: 14px;
 }
 
+.case-card__icon {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 36px;
+  opacity: 0.25;
+  pointer-events: none;
+}
+
 .case-card__index {
   font-size: 11px;
   font-weight: 800;
   color: #999;
   letter-spacing: 0.5px;
+}
+
+.case-card__theme-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-left: auto;
 }
 
 .case-card__difficulty {

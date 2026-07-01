@@ -57,6 +57,7 @@
           :estimated-time="c.estimatedTime"
           :completed="c.completed"
           :locked="c.locked"
+          :visual-theme="c.visualTheme"
           @select="selectCase"
         />
       </div>

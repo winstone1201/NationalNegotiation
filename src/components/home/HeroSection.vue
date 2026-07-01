@@ -6,7 +6,7 @@
         <rect x="2" y="6" width="24" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/>
         <path d="M14 2v8M10 2h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
-      <span>国家医保局 · 政策解读</span>
+      <span>国家医保局 · 医保国谈现场模拟器</span>
     </div>
 
     <!-- 主卡片（弹窗风格） -->
