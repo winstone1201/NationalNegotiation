@@ -12,10 +12,11 @@
           </svg>
         </template>
         <template v-else-if="speaker === 'pharma'">
-          <!-- 药企代表 → 药丸图标：制药企业 -->
+          <!-- 药企代表 → 药箱图标：制药企业 -->
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <rect x="2" y="5.5" width="7.5" height="9" rx="4.5" stroke="currentColor" stroke-width="1.3"/>
-            <rect x="10.5" y="5.5" width="7.5" height="9" rx="4.5" stroke="currentColor" stroke-width="1.3"/>
+            <rect x="3" y="5" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/>
+            <path d="M7 5V3a1 1 0 011-1h4a1 1 0 011 1v2" stroke="currentColor" stroke-width="1.2"/>
+            <path d="M10 9v3M8.5 10.5h3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
           </svg>
         </template>
         <template v-else-if="speaker === 'player'">
