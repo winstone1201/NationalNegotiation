@@ -4,17 +4,18 @@
     <div class="dialogue__avatar">
       <div class="dialogue__avatar-inner">
         <template v-if="speaker === 'narrator'">
-          <!-- 旁白 → 剧本/文档图标：代表"讲述故事" -->
+          <!-- 旁白 → 喇叭图标：播报故事 -->
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <rect x="3.5" y="2" width="13" height="16" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
-            <path d="M7 6.5h6M7 9.5h6M7 12.5h3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            <rect x="2" y="6" width="7" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M9 7l5-3v12l-5-3" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M15.5 7.5a4 4 0 010 5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
           </svg>
         </template>
         <template v-else-if="speaker === 'pharma'">
-          <!-- 药企代表 → 胶囊药丸图标：代表"制药企业" -->
+          <!-- 药企代表 → 药丸图标：制药企业 -->
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <rect x="2.5" y="5.5" width="7" height="9" rx="4.5" stroke="currentColor" stroke-width="1.2"/>
-            <rect x="10.5" y="5.5" width="7" height="9" rx="4.5" stroke="currentColor" stroke-width="1.2"/>
+            <rect x="2" y="5.5" width="7.5" height="9" rx="4.5" stroke="currentColor" stroke-width="1.3"/>
+            <rect x="10.5" y="5.5" width="7.5" height="9" rx="4.5" stroke="currentColor" stroke-width="1.3"/>
           </svg>
         </template>
         <template v-else-if="speaker === 'player'">
@@ -181,9 +182,16 @@ defineExpose({ skipTyping })
   background: var(--color-primary-ghost);
 }
 
+/* 旁白：石板灰蓝色 —— 客观冷静的中性色调 */
+.dialogue--narrator .dialogue__avatar-inner {
+  color: #475569;
+  background: rgba(71, 85, 105, 0.12);
+}
+
+/* 药企：琥珀橙色 —— 鲜明醒目的商业代表色 */
 .dialogue--pharma .dialogue__avatar-inner {
-  color: var(--color-accent-orange);
-  background: rgba(230, 126, 34, 0.1);
+  color: #d97706;
+  background: rgba(217, 119, 6, 0.12);
 }
 
 .dialogue--patient_family .dialogue__avatar-inner {
@@ -191,10 +199,11 @@ defineExpose({ skipTyping })
   background: rgba(231, 76, 60, 0.1);
 }
 
+/* 名字：加粗加深，确保可读性 */
 .dialogue__speaker-name {
-  font-size: 10px;
-  color: var(--color-text-tertiary);
-  font-weight: 500;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
 }
 
 /* 气泡 */
