@@ -2,7 +2,8 @@
  * 案例二：罕见病救命药 - 完整对话树
  * 难度：中等 | 情感主轴 | 患者家属来电
  * 药企人格：情感矛盾型 —— 真心在乎患者，但被公司利润要求束缚
- * 结构：2轮 + 电话事件，R2为2选项硬分叉
+ * 结构：2轮 + 电话事件，R2为3选项（施压/共情/技术）
+ * 成功率：6/9 ≈ 67%（介于案例一78%和案例三67%之间）
  */
 export const case1Dialogue = {
   round1: {
@@ -81,10 +82,16 @@ export const case1Dialogue = {
           effects: { priceChange: -28000 }
         },
         {
-          id: 'B', type: 'empathy', label: '寻求合作（稳妥）',
+          id: 'B', type: 'empathy', label: '寻求合作（情感牌）',
           text: '我接到了一位SMA患儿母亲的电话。她的孩子3岁了还不能独坐。她说："谈判官，我们不是要免费，只是想要一个希望。"如果贵方今天能把价格降到患者真正可及的程度——我愿意在后续推动建立患者援助计划，让这个药不是进了目录就完事，而是真正用到每个需要的孩子身上。',
           nextNode: 'r2_empathy_response',
-          effects: { priceChange: -25000 }
+          effects: { priceChange: -24000 }
+        },
+        {
+          id: 'C', type: 'technical', label: '国际对标（数据牌）',
+          text: '我们做了跨国比价：诺西那生钠在德国、日本、法国的实际支付价折合人民币在5.5-6.8万之间。这些国家同样有严格的药物经济学评估。8万的价格意味着中国患者支付的比德法日还要高——这在国际参照系下很难成立。请贵方基于全球价格体系重新核算。',
+          nextNode: 'r2_technical_response',
+          effects: { priceChange: -27000 }
         }
       ]
     },
@@ -102,8 +109,17 @@ export const case1Dialogue = {
       nodeId: 'r2_empathy_response',
       speaker: 'pharma',
       speakerName: '诺华制药代表',
-      text: '（眼眶微微发红，声音有些沙哑）那个电话……让我想起我们研发团队里的一位科学家。她花了整整15年做这个药，她办公桌上一直放着一张SMA患儿的照片。（停顿了很久）你说得对，进了目录不是终点。患者援助计划这个提议很有价值——我们愿意为了这些孩子，做出超出常规的让步。这是最终报价。',
+      text: '（眼眶微微发红，声音有些沙哑）那个电话……让我想起我们研发团队里的一位科学家。她花了整整15年做这个药，她办公桌上一直放着一张SMA患儿的照片。（停顿了很久）你说得对，进了目录不是终点。患者援助计划这个提议很有价值——但在商业层面，仅凭情感诉求我们能调动的降价空间确实有限。这是我能拿出的最终报价。',
       emotion: 'sympathetic',
+      triggerEnvelope: true
+    },
+
+    r2_technical_response: {
+      nodeId: 'r2_technical_response',
+      speaker: 'pharma',
+      speakerName: '诺华制药代表',
+      text: '（翻阅资料，眉头紧锁）你们连德、法、日的净价都查到了——功课做得很深。（摘下眼镜，语气转为务实）我承认，在全球定价体系里，中国市场不应该被放在比欧洲更高的价格区间。你们的国际对标数据站得住脚。基于全球参照系，这是我们重新核算后的最终报价。',
+      emotion: 'defensive',
       triggerEnvelope: true
     }
   }
