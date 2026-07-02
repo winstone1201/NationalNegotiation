@@ -4,16 +4,17 @@
     <div class="dialogue__avatar">
       <div class="dialogue__avatar-inner">
         <template v-if="speaker === 'narrator'">
+          <!-- 旁白 → 剧本/文档图标：代表"讲述故事" -->
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.2"/>
-            <path d="M7 10h6M10 7v6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <rect x="3.5" y="2" width="13" height="16" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+            <path d="M7 6.5h6M7 9.5h6M7 12.5h3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
           </svg>
         </template>
         <template v-else-if="speaker === 'pharma'">
+          <!-- 药企代表 → 胶囊药丸图标：代表"制药企业" -->
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <rect x="3" y="5" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/>
-            <path d="M7 5V3a1 1 0 011-1h4a1 1 0 011 1v2" stroke="currentColor" stroke-width="1.2"/>
-            <path d="M10 9v3M8.5 10.5h3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+            <rect x="2.5" y="5.5" width="7" height="9" rx="4.5" stroke="currentColor" stroke-width="1.2"/>
+            <rect x="10.5" y="5.5" width="7" height="9" rx="4.5" stroke="currentColor" stroke-width="1.2"/>
           </svg>
         </template>
         <template v-else-if="speaker === 'player'">
