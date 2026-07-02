@@ -79,6 +79,7 @@
 
     <!-- 患者家属来电特效 -->
     <PhoneCallEffect
+      ref="phoneCallRef"
       :visible="showPhoneCall"
       :caller-name="phoneCallData?.callerName || ''"
       :caller-relation="phoneCallData?.callerRelation || ''"
@@ -159,6 +160,7 @@ const dialogueAreaRef = ref(null)
 const currentDialogueRef = ref(null)
 const choiceDisabled = ref(false)
 const showPhoneCall = ref(false)
+const phoneCallRef = ref(null)
 const showPreEnvelope = ref(true)
 const showRound1Check = ref(false)
 const showExitConfirm = ref(false)
@@ -280,6 +282,10 @@ function onRound1CheckContinue() {
   const nextRound = caseData.value?.rounds?.[1]
   if (nextRound?.triggerPhoneCall) {
     showPhoneCall.value = true
+    // 在用户点击回调中直接触发铃声，确保浏览器不拦截
+    nextTick(() => {
+      phoneCallRef.value?.startRingtone()
+    })
     return
   }
   engine.advanceDialogue()
