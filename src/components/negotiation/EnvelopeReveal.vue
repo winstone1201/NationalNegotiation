@@ -30,7 +30,7 @@
             <!-- 底价内容（开封后） -->
             <div class="envelope__inner" v-if="isOpened" ref="innerRef">
               <div class="envelope__seal-label">医保局 · 机密</div>
-              <div class="envelope__price font-number">{{ formatPrice(floorPrice) }}</div>
+              <div class="envelope__price font-number" :style="{ fontSize: priceFontSize(floorPrice, 52) }">{{ formatPrice(floorPrice) }}</div>
               <div class="envelope__unit">元</div>
               <div class="envelope__price-label">谈判底价</div>
               <div class="envelope__limit-label">心中有了底线，但绝不透露给药企</div>
@@ -63,12 +63,12 @@
             <div class="r1check__bar">
               <div class="r1check__side" :class="round1Within15 ? 'r1check__side--ok' : 'r1check__side--over'">
                 <span class="r1check__side-label">第一轮后报价</span>
-                <span class="r1check__side-price font-number">{{ formatPrice(round1Price) }}</span>
+                <span class="r1check__side-price font-number" :style="{ fontSize: priceFontSize(round1Price, 24) }">{{ formatPrice(round1Price) }}</span>
               </div>
               <div class="r1check__vs">{{ round1Within15 ? '≤' : '>' }}</div>
               <div class="r1check__side r1check__side--floor">
                 <span class="r1check__side-label">15% 警戒线</span>
-                <span class="r1check__side-price font-number">{{ formatPrice(floorPrice * 1.15) }}</span>
+                <span class="r1check__side-price font-number" :style="{ fontSize: priceFontSize(floorPrice * 1.15, 24) }">{{ formatPrice(floorPrice * 1.15) }}</span>
               </div>
             </div>
 
@@ -108,7 +108,7 @@
             <!-- 药企报价 -->
             <div class="compare__card" :class="{ 'compare__card--winner': isSuccess, 'compare__card--loser': !isSuccess }">
               <div class="compare__card-label">药企最终报价</div>
-              <div class="compare__card-price font-number">{{ formatPrice(pharmaFinalPrice) }}</div>
+              <div class="compare__card-price font-number" :style="{ fontSize: priceFontSize(pharmaFinalPrice, 28) }">{{ formatPrice(pharmaFinalPrice) }}</div>
               <div class="compare__card-unit">元</div>
               <div class="compare__card-tag" v-if="isSuccess">✅ 进入医保</div>
               <div class="compare__card-tag compare__card-tag--fail" v-else>❌ 未能进入</div>
@@ -124,7 +124,7 @@
             <!-- 医保底价 -->
             <div class="compare__card compare__card--floor">
               <div class="compare__card-label">医保底价</div>
-              <div class="compare__card-price font-number">{{ formatPrice(floorPrice) }}</div>
+              <div class="compare__card-price font-number" :style="{ fontSize: priceFontSize(floorPrice, 28) }">{{ formatPrice(floorPrice) }}</div>
               <div class="compare__card-unit">元</div>
               <div class="compare__card-tag compare__card-tag--floor">🔒 内部测算</div>
             </div>
@@ -273,6 +273,20 @@ function formatPrice(price) {
   if (price % 1 === 0) return price.toLocaleString('zh-CN')
   return price.toFixed(2)
 }
+
+/**
+ * 根据价格字符串长度动态调整字号，避免长数字换行导致方块大小不一致
+ * @param {number} price - 原始价格数值
+ * @param {number} baseSize - 基准字号（px）
+ * @returns {string} CSS font-size 值
+ */
+function priceFontSize(price, baseSize) {
+  const str = formatPrice(price)
+  const len = str.length
+  if (len <= 3) return `${baseSize}px`
+  if (len <= 4) return `${Math.round(baseSize * 0.82)}px`
+  return `${Math.round(baseSize * 0.66)}px`
+}
 </script>
 
 <style scoped>
@@ -394,6 +408,7 @@ function formatPrice(price) {
   font-weight: 900;
   color: #b5343a;
   line-height: 1;
+  white-space: nowrap;
 }
 
 .envelope__unit {
@@ -480,6 +495,7 @@ function formatPrice(price) {
 
 .compare__card {
   flex: 1;
+  min-width: 0;
   background: rgba(255,255,255,0.05);
   border-radius: 14px;
   padding: 18px 10px;
@@ -512,6 +528,7 @@ function formatPrice(price) {
   font-weight: 900;
   color: #fff;
   line-height: 1.1;
+  white-space: nowrap;
 }
 
 .compare__card-unit {
@@ -622,6 +639,7 @@ function formatPrice(price) {
 
 .r1check__side {
   flex: 1;
+  min-width: 0;
   padding: 16px 10px;
   border-radius: 12px;
   border: 2px solid rgba(255,255,255,0.1);
@@ -652,6 +670,7 @@ function formatPrice(price) {
   font-size: 24px;
   font-weight: 900;
   color: #fff;
+  white-space: nowrap;
 }
 
 .r1check__vs {
@@ -739,6 +758,7 @@ function formatPrice(price) {
 .round-summary__start {
   font-size: 11px;
   color: rgba(255,255,255,0.35);
+  white-space: nowrap;
 }
 
 .round-summary__arrow {
@@ -749,6 +769,7 @@ function formatPrice(price) {
 .round-summary__end {
   font-size: 14px;
   font-weight: 800;
+  white-space: nowrap;
 }
 
 .round-summary__end--warn {
