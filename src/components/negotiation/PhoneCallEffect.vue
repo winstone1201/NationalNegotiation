@@ -119,6 +119,8 @@ const callDuration = computed(() => {
 // ==================== 铃声播放 ====================
 
 function startRingtone() {
+  // 防止重复创建（父组件可能在click回调中直接调用）
+  if (ringtoneAudio) return
   try {
     ringtoneAudio = new Audio(getAudioPath('wechat-ringtone.mp3'))
     ringtoneAudio.volume = 0.7
@@ -126,9 +128,12 @@ function startRingtone() {
 
     ringtoneAudio.play().catch((e) => {
       console.warn('[PhoneCall] 铃声播放失败:', e.message)
+      // 播放失败时清理引用，允许重试
+      ringtoneAudio = null
     })
   } catch (e) {
     console.warn('[PhoneCall] 音频创建失败:', e)
+    ringtoneAudio = null
   }
 }
 
@@ -308,6 +313,8 @@ function cleanupAll() {
 onUnmounted(() => {
   cleanupAll()
 })
+
+defineExpose({ startRingtone })
 </script>
 
 <style scoped>
