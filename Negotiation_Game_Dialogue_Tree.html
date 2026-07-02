@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>国家医保谈判互动游戏 — 对话剧情树</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;background:#f0f4f8;color:#1a202c;line-height:1.6}
+.header{background:linear-gradient(135deg,#1a5276,#2c3e50);color:#fff;padding:40px 20px;text-align:center}
+.header h1{font-size:2em;margin-bottom:8px}
+.header p{opacity:.85;font-size:1.05em;max-width:800px;margin:0 auto}
+.legend{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;padding:16px 20px;background:#fff;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:100}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:.85em}
+.legend-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+.container{max-width:1400px;margin:0 auto;padding:24px 20px}
+.case-section{margin-bottom:48px}
+.case-title{font-size:1.6em;font-weight:700;padding:16px 20px;border-radius:10px 10px 0 0;color:#fff}
+.case1{background:linear-gradient(135deg,#2980b9,#1a5276)}
+.case2{background:linear-gradient(135deg,#8e44ad,#6c3483)}
+.case3{background:linear-gradient(135deg,#e74c3c,#c0392b)}
+.case-body{background:#fff;border-radius:0 0 10px 10px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow-x:auto}
+.case-info{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.info-tag{background:#f7fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 12px;font-size:.85em}
+.info-tag strong{color:#2c3e50}
+.tree{min-width:900px}
+.round-block{margin-bottom:32px}
+.round-header{font-size:1.2em;font-weight:700;padding:10px 16px;border-radius:8px;margin-bottom:16px;display:inline-block}
+.round-r1{background:#ebf8ff;color:#2b6cb0;border:2px solid #bee3f8}
+.round-r2{background:#fefcbf;color:#975a16;border:2px solid #fefcbf}
+.node-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.node{border-radius:12px;padding:14px 18px;min-width:220px;max-width:380px;position:relative;font-size:.9em;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.node-narrator{background:#f7fafc;border:2px solid #cbd5e0}
+.node-pharma{background:#fffaf0;border:2px solid #fbd38d}
+.node-phone{background:#f0fff4;border:2px solid #9ae6b4}
+.node-tag{display:inline-block;font-size:.7em;font-weight:700;padding:2px 8px;border-radius:10px;margin-bottom:6px}
+.tag-narrator{background:#cbd5e0;color:#2d3748}
+.tag-pharma{background:#fbd38d;color:#744210}
+.tag-phone{background:#9ae6b4;color:#22543d}
+.node-text{line-height:1.5}
+.node-speaker{font-weight:700;font-size:.85em;margin-bottom:4px}
+.node-price{font-size:.8em;color:#718096;margin-top:6px}
+.connector{display:flex;align-items:center;gap:8px;margin:4px 0 4px 40px}
+.connector-arrow{color:#a0aec0;font-size:1.2em}
+.connector-label{font-size:.8em;background:#edf2f7;padding:4px 10px;border-radius:12px;white-space:nowrap}
+.choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin:12px 0 12px 40px}
+.choice-card{background:#fff;border:2px solid #e2e8f0;border-radius:10px;padding:14px;transition:all .2s}
+.choice-card:hover{border-color:#4299e1;box-shadow:0 4px 12px rgba(66,153,225,.15)}
+.choice-type{display:inline-block;font-size:.7em;font-weight:700;padding:2px 8px;border-radius:8px;margin-bottom:6px}
+.type-pressure{background:#fed7d7;color:#c53030}
+.type-empathy{background:#c6f6d5;color:#276749}
+.type-technical{background:#bee3f8;color:#2a4365}
+.choice-label{font-weight:700;font-size:.9em;margin-bottom:4px}
+.choice-text{font-size:.82em;color:#4a5568;line-height:1.4}
+.choice-effect{font-size:.78em;color:#e53e3e;font-weight:600;margin-top:6px}
+.phone-block{background:linear-gradient(135deg,#f0fff4,#e6fffa);border:2px solid #81e6d9;border-radius:12px;padding:18px;margin:16px 0}
+.phone-block h4{color:#234e52;margin-bottom:8px}
+.envelope-block{background:linear-gradient(135deg,#fffff0,#fefcbf);border:3px solid #ecc94b;border-radius:12px;padding:20px;text-align:center;margin:16px 0}
+.envelope-block h3{color:#744210}
+.outcome-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.85em}
+.outcome-table th{background:#2d3748;color:#fff;padding:8px 12px;text-align:center}
+.outcome-table td{padding:8px 12px;text-align:center;border-bottom:1px solid #e2e8f0}
+.outcome-table tr:hover td{background:#f7fafc}
+.outcome-pass{background:#c6f6d5!important;font-weight:700}
+.outcome-fail{background:#fed7d7!important}
+.note-box{background:#ebf8ff;border-left:4px solid #4299e1;padding:12px 16px;margin:12px 0;border-radius:0 8px 8px 0;font-size:.85em}
+.summary-box{background:linear-gradient(135deg,#2d3748,#1a202c);color:#fff;border-radius:10px;padding:24px}
+.footer{text-align:center;padding:32px;color:#a0aec0;font-size:.85em}
+@media print{body{font-size:11px}.legend{position:static}.case-section{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>🏛️ 国家医保谈判 · 互动新闻游戏</h1>
+<h1 style="font-size:1.3em;margin-top:8px">完整对话剧情树（思维导图）</h1>
+<p>三个谈判案例 × 两轮谈判 × 多条分支路径 = 24种独特游戏体验<br>
+本图展示所有对话节点、玩家选择、价格变化及谈判结果<br>
+<strong>含价格结转逻辑：第二轮起始价 = min(第一轮结果, 第二轮开局报价)</strong></p>
+</div>
+
+<div class="legend">
+<div class="legend-item"><div class="legend-dot" style="background:#cbd5e0;border:2px solid #a0aec0"></div> 旁白叙事</div>
+<div class="legend-item"><div class="legend-dot" style="background:#fbd38d;border:2px solid #ed8936"></div> 药企代表</div>
+<div class="legend-item"><div class="legend-dot" style="background:#9ae6b4;border:2px solid #48bb78"></div> 来电事件</div>
+<div class="legend-item"><div class="legend-dot" style="background:#fed7d7;"></div> 🗜️ 施压策略</div>
+<div class="legend-item"><div class="legend-dot" style="background:#c6f6d5;"></div> 🤝 共情策略</div>
+<div class="legend-item"><div class="legend-dot" style="background:#bee3f8;"></div> 📊 技术策略</div>
+</div>
+
+<div class="container">
+
+<!-- ========== 案例一：慢病续约 ========== -->
+<div class="case-section">
+<div class="case-title case1">📋 案例一 · 慢性病用药续约（立普妥／辉瑞）<span style="font-size:.65em;font-weight:400;margin-left:12px">难度：⭐ 入门</span></div>
+<div class="case-body">
+<div class="case-info">
+<div class="info-tag"><strong>药品：</strong>立普妥（阿托伐他汀）— 降脂药</div>
+<div class="info-tag"><strong>企业：</strong>辉瑞中国（Pfizer）</div>
+<div class="info-tag"><strong>起始价：</strong>5.6 元/片</div>
+<div class="info-tag"><strong>底价信封：</strong>3.2 元/片</div>
+<div class="info-tag"><strong>背景：</strong>已入医保8年，销量超预估4倍</div>
+<div class="info-tag"><strong>真实结果：</strong>3.0元（累计降幅82%）</div>
+</div>
+
+<div class="tree">
+<div class="round-block">
+<div class="round-header round-r1">🔵 第一轮谈判 — 开局价 5.6元</div>
+
+<div class="node-row"><div class="node node-narrator"><span class="node-tag tag-narrator">旁白</span><div class="node-text">这次的对手有些不同。对方不是新面孔，而是在医保目录里服务了8年的老朋友——辉瑞公司的降脂药"立普妥"。中国有2亿高血脂患者，8年累计开了超过30亿张处方。但问题出在：当初预估每年卖5000万盒，实际一年卖了2.1亿盒——是预估的4倍！按照新规：药物销量严重超标后，药企必须在续约时重新谈价格。道理很简单：卖得越多，单盒成本越低——价格就该越低。</div></div></div>
+<div class="connector"><span class="connector-arrow">▼</span></div>
+
+<div class="node-row"><div class="node node-pharma"><span class="node-tag tag-pharma">药企代表 · 辉瑞中国</span><div class="node-text"><strong>"立普妥服务中国患者8年，30亿+处方。续约报价：维持5.6元/片。坦白说，这已经是全球最低价位了，再降空间非常有限。"</strong></div><div class="node-price">当前价格：5.6元</div></div></div>
+
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">玩家选择（3选1）</span></div>
+
+<div class="choice-grid">
+<div class="choice-card"><span class="choice-type type-pressure">A · 施压</span><div class="choice-label">「量价挂钩」</div><div class="choice-text">"维持原价？合同预估5000万盒，你卖了2.1亿——超了4倍！卖得越多成本越低，价格不应该相应降下来吗？"</div><div class="choice-effect">💰 -1.4元 → 4.2元</div></div>
+<div class="choice-card"><span class="choice-type type-empathy">B · 共情</span><div class="choice-label">「社会价值最大化」</div><div class="choice-text">"立普妥是好药，2亿患者离不开它。但正因为量这么大——每降1分钱就能释放几亿资金给其他救命药。这不是惩罚你，是社会价值最大化。"</div><div class="choice-effect">💰 -0.8元 → 4.8元</div></div>
+<div class="choice-card"><span class="choice-type type-technical">C · 技术</span><div class="choice-label">「规则测算」</div><div class="choice-text">"按照新续约规则：实际销量超预估3倍，强制重新测算价格。模型建议3.2元，这是统一适用的规则，请核实。"</div><div class="choice-effect">💰 -1.8元 → 3.8元</div></div>
+</div>
+
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">药企回应（第一轮结束）</span></div>
+<div class="choice-grid">
+<div class="choice-card"><span class="choice-type type-pressure">回应 A</span><div class="choice-text" style="font-size:.82em">微笑褪去，语气沉稳。"销量超标恰恰说明这药真正帮到了中国患者——这不正是医保的初衷吗？如果卖得好每次都要被惩罚性降价，我们药企还有什么动力去基层推广好药？规则可以执行，但也要有温度。下一轮带来新方案。"</div></div>
+<div class="choice-card"><span class="choice-type type-empathy">回应 B</span><div class="choice-text" style="font-size:.82em">点头认同。"这个角度看问题我接受。医保基金每一分钱都该花在刀刃上。立普妥量这么大，降价确实能为其他药品腾空间。基于公平原则重新测算。第二轮见。"</div></div>
+<div class="choice-card"><span class="choice-type type-technical">回应 C</span><div class="choice-text" style="font-size:.82em">仔细阅读续约规则条款。"3.2这个数字离成本线很近了。但规则清晰，我们有义务配合重新测算。再给我们一轮评估时间，回来带调整后的方案。"</div></div>
+</div>
+</div>
+
+<div class="phone-block">
+<h4>📞 来电事件（两轮之间）</h4>
+<div class="node-row"><div class="node node-phone"><span class="node-tag tag-phone">来电 · 乡镇卫生院医生</span><div class="node-text">"谈判官您好，我是湖南一个乡镇卫生院的。我们这里很多老人家血脂高，立普妥是控制得最稳定的药。如果价格能再降一点，我们就能给更多村民开这个药了。拜托您了。"</div></div></div>
+</div>
+
+<div class="round-block">
+<div class="round-header round-r2">🟡 第二轮谈判 — 开局报价 4.8元 | 价格结转：R2起始价 = min(R1结果, 4.8)</div>
+
+<div class="node-row"><div class="node node-narrator"><span class="node-tag tag-narrator">旁白</span><div class="node-text">第一轮没有谈拢。药企坚持"已经是全球最低了"，但摆在面前的数据没法回避——按现在的销量增速，明年医保基金的预算将出现严重缺口。立普妥是"原研药"，市面上还有很多仿制药价格只要几分之一。但原研药有几十年来几千万患者使用后积累的安全性数据——这不只是"药效一样不一样"，是沉甸甸的临床信任。你的任务不是简单地"价低者赢"，而是在信任和基金可持续之间找到公平的平衡点。</div></div></div>
+<div class="connector"><span class="connector-arrow">▼</span></div>
+
+<div class="node-row"><div class="node node-pharma"><span class="node-tag tag-pharma">药企代表 · 辉瑞中国</span><div class="node-text"><strong>"团队短暂讨论后：愿意降到4.8元。必须坦率说：这已经接近边际成本了。未来8年新协议中不能再有进一步降价——企业需要可预期、可规划的定价环境，才能持续在中国投入。这是我们8年来建立起来的信任，我不希望今天全部花光。"</strong></div></div></div>
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">玩家选择（3选1）</span></div>
+
+<div class="choice-grid">
+<div class="choice-card"><span class="choice-type type-pressure">A · 施压</span><div class="choice-label">「仿制药对标」</div><div class="choice-text">"4.8还不够。仿制药集采价已经到1.5元了。你的价格是仿制药的3倍——这差距怎么跟公众、跟审计交代？"</div><div class="choice-effect">💰 -1.7元</div></div>
+<div class="choice-card"><span class="choice-type type-empathy">B · 共情</span><div class="choice-label">「珍惜合作」</div><div class="choice-text">"8年了，零质量事故。这份信任是一砖一瓦建起来的。我希望更多中国患者能继续以可负担的价格用上这药——让我们的合作走得更远。"</div><div class="choice-effect">💰 -1.4元</div></div>
+<div class="choice-card"><span class="choice-type type-technical">C · 技术</span><div class="choice-label">「阶梯定价」</div><div class="choice-text">"折中方案：阶梯定价。前2亿盒接近现价，超出部分自动降到3.2元。你的利润核心被保护，医保基金也不会被增量压垮——三方共赢。"</div><div class="choice-effect">💰 -1.5元</div></div>
+</div>
+
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">✉️ 底价信封揭晓</span></div>
+<div class="envelope-block"><h3>✉️ 底价信封：3.2 元/片</h3><p style="margin-top:8px">最终价 ≤ 3.2 → ✅ 谈判成功 | 最终价 > 3.2 → ❌ 谈判破裂</p></div>
+
+<table class="outcome-table">
+<tr><th>路径</th><th>R1选择</th><th>R1结果</th><th>R2起始<br>(结转后)</th><th>R2选择</th><th>R2降价</th><th>最终价</th><th>结果</th></tr>
+<tr><td>1A→2A</td><td>施压</td><td>4.2</td><td>4.2</td><td>施压</td><td>-1.7</td><td><strong>2.5</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1A→2B</td><td>施压</td><td>4.2</td><td>4.2</td><td>共情</td><td>-1.4</td><td><strong>2.8</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1A→2C</td><td>施压</td><td>4.2</td><td>4.2</td><td>技术</td><td>-1.5</td><td><strong>2.7</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1B→2A</td><td>共情</td><td>4.8</td><td>4.8</td><td>施压</td><td>-1.7</td><td><strong>3.1</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1B→2B</td><td>共情</td><td>4.8</td><td>4.8</td><td>共情</td><td>-1.4</td><td><strong>3.4</strong></td><td class="outcome-fail">❌ 破裂</td></tr>
+<tr><td>1B→2C</td><td>共情</td><td>4.8</td><td>4.8</td><td>技术</td><td>-1.5</td><td><strong>3.3</strong></td><td class="outcome-fail">❌ 破裂</td></tr>
+<tr><td>1C→2A</td><td>技术</td><td>3.8</td><td>3.8</td><td>施压</td><td>-1.7</td><td><strong>2.1</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1C→2B</td><td>技术</td><td>3.8</td><td>3.8</td><td>共情</td><td>-1.4</td><td><strong>2.4</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1C→2C</td><td>技术</td><td>3.8</td><td>3.8</td><td>技术</td><td>-1.5</td><td><strong>2.3</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+</table>
+<div class="note-box">📊 <strong>9条路径，7条成功（78%）。</strong>B→B 和 B→C 失败——R1只用共情（-0.8）力度不够，R2无法挽救。R1用技术策略（-1.8）最优。</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ========== 案例二：罕见病救命药 ========== -->
+<div class="case-section">
+<div class="case-title case2">💜 案例二 · 罕见病救命药（诺西那生钠／诺华）<span style="font-size:.65em;font-weight:400;margin-left:12px">难度：⭐⭐ 中等</span></div>
+<div class="case-body">
+<div class="case-info">
+<div class="info-tag"><strong>药品：</strong>诺西那生钠（Spinraza）— SMA特效药</div>
+<div class="info-tag"><strong>企业：</strong>诺华制药（Novartis）</div>
+<div class="info-tag"><strong>起始价：</strong>120,000 元/针</div>
+<div class="info-tag"><strong>底价信封：</strong>55,000 元/针</div>
+<div class="info-tag"><strong>背景：</strong>全球唯一获批SMA药物，研发18年耗资20亿美元</div>
+<div class="info-tag"><strong>真实结果：</strong>33,000元（降价72%），"每一个小群体都不应该被放弃"</div>
+</div>
+
+<div class="tree">
+<div class="round-block">
+<div class="round-header round-r1">🔵 第一轮谈判 — 开局价 120,000元</div>
+
+<div class="node-row"><div class="node node-narrator"><span class="node-tag tag-narrator">旁白</span><div class="node-text">谈判室的门在你身后关上了。对面是全球排名前三的跨国药企代表。你的桌上放着一份1200名SMA患儿的名单——他们患上了一种叫"脊髓性肌萎缩症"的罕见病，全身会逐渐失去力气，最终连呼吸都变得困难。全球只有6万名患者，因为患病的人太少，药企研发的动力不足，这类药在业内被叫做"孤儿药"——不是药被抛弃了，而是这些孩子被市场"遗忘"了。今天，你要帮他们发出声音。</div></div></div>
+<div class="connector"><span class="connector-arrow">▼</span></div>
+
+<div class="node-row"><div class="node node-pharma"><span class="node-tag tag-pharma">药企代表 · 诺华制药</span><div class="node-text"><strong>"诺西那生钠是全球唯一获批的SMA治疗药物。研发历时18年，耗资超过20亿美元。首轮报价：12万元/针。全球只有6万名患者，平摊到每支药上的研发成本是天文数字。"</strong></div><div class="node-price">当前价格：120,000元</div></div></div>
+
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">玩家选择（3选1）</span></div>
+
+<div class="choice-grid">
+<div class="choice-card"><span class="choice-type type-pressure">A · 施压</span><div class="choice-label">「国际价格挑战」</div><div class="choice-text">"12万？澳大利亚不到6万。为什么到了中国就要翻倍？1200个中国孩子等不起这个价格。"</div><div class="choice-effect">💰 -15,000 → 105,000</div></div>
+<div class="choice-card"><span class="choice-type type-empathy">B · 共情</span><div class="choice-label">「患者优先」</div><div class="choice-text">"我桌上放着1200个SMA患儿的名单，最小的才8个月大。这不是一个商业谈判——这是一场公共卫生危机。"</div><div class="choice-effect">💰 -8,000 → 112,000</div></div>
+<div class="choice-card"><span class="choice-type type-technical">C · 技术</span><div class="choice-label">「价值分析」</div><div class="choice-text">"国际成本效益模型显示：每QALY合理范围5-7万元。12万远超这个标准。我们用数据说话。"</div><div class="choice-effect">💰 -12,000 → 108,000</div></div>
+</div>
+
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">药企回应（第一轮结束）</span></div>
+<div class="choice-grid">
+<div class="choice-card"><span class="choice-type type-pressure">回应 A</span><div class="choice-text" style="font-size:.82em">略显不悦但克制。"每个国家的定价取决于市场规模、物流成本、补贴政策。澳大利亚有专门的罕见病基金，中国目前还没有。不过——我们会带着更有诚意的方案回来。"</div></div>
+<div class="choice-card"><span class="choice-type type-empathy">回应 B</span><div class="choice-text" style="font-size:.82em">长久停顿，声音柔和下来。"8个月大……这句话刺痛了我。我们做这个药是为了患者，不是为了利润。我们见过那些孩子的眼睛。第二轮我会重新认真考虑价格。"</div></div>
+<div class="choice-card"><span class="choice-type type-technical">回应 C</span><div class="choice-text" style="font-size:.82em">"QALY框架有一个盲区：18年的研发里，有12年是失败的尝试——这些沉默成本没有被模型捕捉。12万里确实有调整空间。第二轮我们会展示诚意。"</div></div>
+</div>
+</div>
+
+<div class="phone-block">
+<h4>📞 来电事件（两轮之间）</h4>
+<div class="node-row"><div class="node node-phone"><span class="node-tag tag-phone">来电 · SMA患儿母亲</span><div class="node-text">"谈判官您好……我的孩子今年3岁了，医生说如果能用上这个药，他就有可能站起来走路。我们知道药很贵，但请无论如何帮帮我们。"</div></div></div>
+</div>
+
+<div class="round-block">
+<div class="round-header round-r2">🟡 第二轮谈判 — 开局报价 80,000元 | 价格结转：R2起始价 = min(R1结果, 80,000)</div>
+
+<div class="node-row"><div class="node node-narrator"><span class="node-tag tag-narrator">旁白</span><div class="node-text">第一轮硝烟未散，你的手机在桌上震动——是一位SMA患儿的母亲打来的微信电话。按照规则，药企还有最后一次报价机会。如果报价仍然高于医保局内部测算的底价上限，谈判就直接宣告失败。这是双方最后的协商窗口——1200个家庭的希望，都压在这一轮了。</div></div></div>
+<div class="connector"><span class="connector-arrow">▼</span></div>
+
+<div class="node-row"><div class="node node-pharma"><span class="node-tag tag-pharma">药企代表 · 诺华制药</span><div class="node-text"><strong>"紧急和总部沟通后，价格降到8万元/针。这是根据中国特殊情况争取到的最大让步。低于这个价格，每打一针都在亏损——全球没有任何一个市场有这样的先例。"</strong></div></div></div>
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">玩家选择（2选1）</span></div>
+
+<div class="choice-grid">
+<div class="choice-card"><span class="choice-type type-pressure">A · 施压</span><div class="choice-label">「守住底线（高风险）」</div><div class="choice-text">"8万还是太高了。如果你不能做到6万以下，我今天就终止谈判。1200个家庭没有后路可退——我也没有。"</div><div class="choice-effect">💰 -28,000</div></div>
+<div class="choice-card"><span class="choice-type type-empathy">B · 共情</span><div class="choice-label">「寻求合作（稳健）」</div><div class="choice-text">"刚才一位SMA妈妈给我打了电话。她3岁的孩子还不能坐起来。她说：'我们不要免费的，只要一个希望。'如果你让这个药变得可及，我会推动建立患者援助计划。"</div><div class="choice-effect">💰 -25,000</div></div>
+</div>
+
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">✉️ 底价信封揭晓</span></div>
+<div class="envelope-block"><h3>✉️ 底价信封：55,000 元/针</h3><p style="margin-top:8px">最终价 ≤ 55,000 → ✅ 谈判成功 | 最终价 > 55,000 → ❌ 谈判破裂</p></div>
+
+<table class="outcome-table">
+<tr><th>路径</th><th>R1选择</th><th>R1结果</th><th>R2起始<br>(结转后)</th><th>R2选择</th><th>R2降价</th><th>最终价</th><th>结果</th></tr>
+<tr><td>1A→2A</td><td>施压</td><td>105,000</td><td>80,000</td><td>施压</td><td>-28,000</td><td><strong>52,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1A→2B</td><td>施压</td><td>105,000</td><td>80,000</td><td>共情</td><td>-25,000</td><td><strong>55,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1B→2A</td><td>共情</td><td>112,000</td><td>80,000</td><td>施压</td><td>-28,000</td><td><strong>52,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1B→2B</td><td>共情</td><td>112,000</td><td>80,000</td><td>共情</td><td>-25,000</td><td><strong>55,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1C→2A</td><td>技术</td><td>108,000</td><td>80,000</td><td>施压</td><td>-28,000</td><td><strong>52,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1C→2B</td><td>技术</td><td>108,000</td><td>80,000</td><td>共情</td><td>-25,000</td><td><strong>55,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+</table>
+<div class="note-box">📊 <strong>6条路径全部成功（100%）！</strong>关键在于R2的价格结转机制：无论R1砍到多少，R2起始价被80,000封顶。R2施压（-28,000→52,000）和共情（-25,000→55,000）都在底价之内。但注意：R2共情刚好压线55,000=底价，非常惊险。真实谈判中张劲妮最终谈到33,000元，游戏的底价设定相对保守。</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ========== 案例三：肿瘤靶向药 ========== -->
+<div class="case-section">
+<div class="case-title case3">🔴 案例三 · 肿瘤靶向药（艾瑞卡／PD-1抑制剂）<span style="font-size:.65em;font-weight:400;margin-left:12px">难度：⭐⭐⭐ 困难</span></div>
+<div class="case-body">
+<div class="case-info">
+<div class="info-tag"><strong>药品：</strong>艾瑞卡（卡瑞利珠单抗）— PD-1免疫抑制剂</div>
+<div class="info-tag"><strong>企业：</strong>全球肿瘤药事业部</div>
+<div class="info-tag"><strong>起始价：</strong>98,000 元/疗程</div>
+<div class="info-tag"><strong>底价信封：</strong>48,000 元/疗程</div>
+<div class="info-tag"><strong>背景：</strong>广谱抗癌药，中国有8.5万肿瘤患者等待</div>
+<div class="info-tag"><strong>真实结果：</strong>42,000元（降价57%），以量换价经典案例</div>
+</div>
+
+<div class="tree">
+<div class="round-block">
+<div class="round-header round-r1">🔵 第一轮谈判 — 开局价 98,000元</div>
+
+<div class="node-row"><div class="node node-narrator"><span class="node-tag tag-narrator">旁白</span><div class="node-text">对面是全球肿瘤药巨头，他们的王牌产品——PD-1免疫检查点抑制剂，在欧美定价约15万元一个疗程。中国有8.5万名肿瘤患者在等着这个药。一个新药从实验室到上市平均需要12年、烧掉超过15亿美元——更残酷的是，进入临床试验的100个候选药物里，最后能活着走到药店的不到12个。你既要为8.5万中国患者争一个用得起的公平价格，又不能传递出"中国市场不欢迎创新"的信号。这是一场在"生命"和"商业"之间走钢丝的谈判。</div></div></div>
+<div class="connector"><span class="connector-arrow">▼</span></div>
+
+<div class="node-row"><div class="node node-pharma"><span class="node-tag tag-pharma">药企代表 · 全球肿瘤药事业部</span><div class="node-text"><strong>"艾瑞卡在欧美定价约15万/疗程。考虑到中国市场的价格敏感度，首轮报价9.8万元/疗程。这已经充分考虑了中国GDP水平、医保基金承受能力和市场规模。"</strong></div><div class="node-price">当前价格：98,000元</div></div></div>
+
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">玩家选择（3选1）</span></div>
+
+<div class="choice-grid">
+<div class="choice-card"><span class="choice-type type-pressure">A · 施压</span><div class="choice-label">「印度仿制药挑战」</div><div class="choice-text">"9.8万？印度授权仿制药已经不到1.5万了。8.5万中国患者等着用这个药——我们不能接受7倍的价格。"</div><div class="choice-effect">💰 -18,000 → 80,000</div></div>
+<div class="choice-card"><span class="choice-type type-empathy">B · 共情</span><div class="choice-label">「市场逻辑」</div><div class="choice-text">"如果这个药不进医保，8.5万患者里绝大多数都用不起。但一旦纳入了——这就是全球最大的单一体肿瘤药市场。这不是降价，是打开一扇门。"</div><div class="choice-effect">💰 -10,000 → 88,000</div></div>
+<div class="choice-card"><span class="choice-type type-technical">C · 技术</span><div class="choice-label">「疗效数据差异」</div><div class="choice-text">"临床数据显示：中国患者的肿瘤缩小率（34%）低于全球均值（42%）。如果对中国患者的疗效打了折扣，价格也应该相应调整。"</div><div class="choice-effect">💰 -15,000 → 83,000</div></div>
+</div>
+
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">药企回应（第一轮结束）</span></div>
+<div class="choice-grid">
+<div class="choice-card"><span class="choice-type type-pressure">回应 A</span><div class="choice-text" style="font-size:.82em">面无表情，翻开文件。"印度是'自愿许可'例外——仿制药厂零研发成本。中国是全球第二大创新药市场，价格必须体现研发投入。12年、15亿美元、100个候选药只活了12个。你说的每一个折扣背后都是88个失败项目的沉默成本。但——我们可以调整。第二轮见。"</div></div>
+<div class="choice-card"><span class="choice-type type-empathy">回应 B</span><div class="choice-text" style="font-size:.82em">微微点头。"市场规模这个逻辑站得住。如果纳保真的意味着大规模放量——以量换价绝对可以谈。第二轮我们会根据这个思路调整方案。"</div></div>
+<div class="choice-card"><span class="choice-type type-technical">回应 C</span><div class="choice-text" style="font-size:.82em">快速翻阅临床数据。"中国亚组的差异可能反映的是入组患者的疾病分期分布不同，不是'药对中国患者效果差'。不过——尊重数据，我们会在第二轮做出调整。"</div></div>
+</div>
+</div>
+
+<div class="phone-block">
+<h4>📞 来电事件（两轮之间）</h4>
+<div class="node-row"><div class="node node-phone"><span class="node-tag tag-phone">来电 · 药物经济学专家组</span><div class="node-text">"谈判官，我们刚完成了艾瑞卡在全球7个主要市场的定价模型交叉验证。德国4.8万、日本5.2万、澳大利亚4.5万——这是他们自己的全球定价体系。结合中国人均GDP调整，4.8万是站得住脚的底线。注意他们可能会拿印度仿制药说事，但那是自愿许可的特殊情况，不能作为参照。祝你谈判顺利。"</div></div></div>
+</div>
+
+<div class="round-block">
+<div class="round-header round-r2">🟡 第二轮谈判 — 开局报价 72,000元 | 价格结转：R2起始价 = min(R1结果, 72,000)</div>
+
+<div class="node-row"><div class="node node-narrator"><span class="node-tag tag-narrator">旁白</span><div class="node-text">药企代表拿出一沓厚厚的研发成本报告，数字很震撼："这个药用了12年、烧了15亿美元才做出来。"但你手中有一份利器——多国参考价模型：你的团队已经把这个药在德国、日本、澳大利亚等国的实际售价全部拉出来横向对比过，再根据中国人均收入水平重新计算出了一个合理数字。中国医保的独特优势是14亿人的市场规模——"以量换价"的底牌就在你手上。</div></div></div>
+<div class="connector"><span class="connector-arrow">▼</span></div>
+
+<div class="node-row"><div class="node node-pharma"><span class="node-tag tag-pharma">药企代表 · 全球肿瘤药事业部</span><div class="node-text"><strong>"和总部紧急磋商后，可以做到7.2万/疗程。以量换价：年采购量不低于5万疗程。低于这个量，这个价格不可持续。这是我们的底线。"</strong></div></div></div>
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">玩家选择（3选1）</span></div>
+
+<div class="choice-grid">
+<div class="choice-card"><span class="choice-type type-pressure">A · 施压</span><div class="choice-label">「专利悬崖施压」</div><div class="choice-text">"7.2万还是太高。你们下个月在欧洲面临关键专利到期。仿制药一旦涌入，及时进入中国市场对你全球收入结构至关重要。"</div><div class="choice-effect">💰 -25,000</div></div>
+<div class="choice-card"><span class="choice-type type-empathy">B · 共情</span><div class="choice-label">「患者倒计时」</div><div class="choice-text">"我们接受以量换价。但请记住：每拖一轮谈判，就有癌症患者因为用不起这个药而死去。我们今天能不能坐下来，找到一个患者用得起、你也有合理回报的价格？"</div><div class="choice-effect">💰 -20,000</div></div>
+<div class="choice-card"><span class="choice-type type-technical">C · 技术</span><div class="choice-label">「全球价格对标」</div><div class="choice-text">"我们团队拉出了实际成交价：德国4.8万、日本5.2万、澳大利亚4.5万。用中国GDP平减指数调整后，4.8万是公平的全球对等价格。请核实。"</div><div class="choice-effect">💰 -26,000</div></div>
+</div>
+
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">✉️ 底价信封揭晓</span></div>
+<div class="envelope-block"><h3>✉️ 底价信封：48,000 元/疗程</h3><p style="margin-top:8px">最终价 ≤ 48,000 → ✅ 谈判成功 | 最终价 > 48,000 → ❌ 谈判破裂</p></div>
+
+<table class="outcome-table">
+<tr><th>路径</th><th>R1选择</th><th>R1结果</th><th>R2起始<br>(结转后)</th><th>R2选择</th><th>R2降价</th><th>最终价</th><th>结果</th></tr>
+<tr><td>1A→2A</td><td>施压</td><td>80,000</td><td>72,000</td><td>施压·专利</td><td>-25,000</td><td><strong>47,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1A→2B</td><td>施压</td><td>80,000</td><td>72,000</td><td>共情·患者</td><td>-20,000</td><td><strong>52,000</strong></td><td class="outcome-fail">❌ 破裂</td></tr>
+<tr><td>1A→2C</td><td>施压</td><td>80,000</td><td>72,000</td><td>技术·全球</td><td>-26,000</td><td><strong>46,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1B→2A</td><td>共情</td><td>88,000</td><td>72,000</td><td>施压·专利</td><td>-25,000</td><td><strong>47,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1B→2B</td><td>共情</td><td>88,000</td><td>72,000</td><td>共情·患者</td><td>-20,000</td><td><strong>52,000</strong></td><td class="outcome-fail">❌ 破裂</td></tr>
+<tr><td>1B→2C</td><td>共情</td><td>88,000</td><td>72,000</td><td>技术·全球</td><td>-26,000</td><td><strong>46,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1C→2A</td><td>技术</td><td>83,000</td><td>72,000</td><td>施压·专利</td><td>-25,000</td><td><strong>47,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+<tr><td>1C→2B</td><td>技术</td><td>83,000</td><td>72,000</td><td>共情·患者</td><td>-20,000</td><td><strong>52,000</strong></td><td class="outcome-fail">❌ 破裂</td></tr>
+<tr><td>1C→2C</td><td>技术</td><td>83,000</td><td>72,000</td><td>技术·全球</td><td>-26,000</td><td><strong>46,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+</table>
+<div class="note-box">📊 <strong>9条路径，6条成功（67%）。</strong>R2选择共情（-20,000）必定失败——在这个高难度案例中，纯粹的情感诉求不够有力。R2必须用施压（专利悬崖，-25,000→47,000）或技术（全球对标，-26,000→46,000）才能突破底价。真实谈判中，中国用14亿人市场规模实现了以量换价，最终谈到42,000元。</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ========== 全局总结 ========== -->
+<div class="case-section">
+<div class="summary-box">
+<h2 style="margin-bottom:16px">📊 三案例 · 全路径总览</h2>
+<table class="outcome-table" style="color:#fff">
+<tr><th style="background:#4a5568">案例</th><th style="background:#4a5568">难度</th><th style="background:#4a5568">路径数</th><th style="background:#4a5568">成功路径</th><th style="background:#4a5568">成功率</th><th style="background:#4a5568">关键机制</th><th style="background:#4a5568">现实结果</th></tr>
+<tr><td>案例一 · 慢病续约（立普妥/辉瑞）</td><td>⭐ 入门</td><td>9</td><td>7</td><td>78%</td><td>R2起始价=min(R1,4.8)</td><td>3.0元（降82%）</td></tr>
+<tr><td>案例二 · 罕见病（诺西那生钠/诺华）</td><td>⭐⭐ 中等</td><td>6</td><td>6</td><td style="background:#c6f6d5;color:#1a202c;font-weight:700">100%</td><td>R2起始价=min(R1,80,000)</td><td>33,000元（降72%）</td></tr>
+<tr><td>案例三 · 肿瘤靶向药（艾瑞卡/PD-1）</td><td>⭐⭐⭐ 困难</td><td>9</td><td>6</td><td>67%</td><td>R2起始价=min(R1,72,000)</td><td>42,000元（降57%）</td></tr>
+<tr style="font-weight:700;background:rgba(255,255,255,.1)"><td>合计</td><td></td><td>24</td><td>19</td><td>79%</td><td></td><td></td></tr>
+</table>
+
+<div style="margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+<div style="background:rgba(255,255,255,.08);border-radius:8px;padding:16px">
+<h4 style="color:#fbd38d">🎮 游戏设计理念</h4>
+<p style="font-size:.9em;opacity:.85;margin-top:8px">案例一（入门）78%成功率——让玩家建立信心。案例二（中等）100%成功率——关键教学点在于R2的"价格结转"机制。案例三（困难）67%成功率——R2选共情必定失败，必须用数据或硬谈判。游戏结束时展示真实结果作为教学对比。</p>
+</div>
+<div style="background:rgba(255,255,255,.08);border-radius:8px;padding:16px">
+<h4 style="color:#9ae6b4">📖 核心教学点</h4>
+<p style="font-size:.9em;opacity:.85;margin-top:8px"><strong>价格结转机制：</strong>R2起始价 = min(R1砍价结果, R2开局报价)。这意味着R1的砍价成果会被保留到R2。特别在案例二中，这个机制使得所有6条路径都能成功——R2开局80,000的"天花板"给了R1足够的操作空间。</p>
+</div>
+<div style="background:rgba(255,255,255,.08);border-radius:8px;padding:16px">
+<h4 style="color:#bee3f8">🔀 三种策略维度</h4>
+<p style="font-size:.9em;opacity:.85;margin-top:8px"><strong>施压：</strong>降价幅度大但可能激怒对方。<strong>共情：</strong>降价温和但建立信任。<strong>技术：</strong>数据驱动，幅度在两者之间。不同案例中最优策略不同——技术策略在案例一中最优（-1.8），在案例三中R2也是关键（-26,000为最大降幅）。</p>
+</div>
+</div>
+
+<div style="margin-top:24px;padding:20px;background:rgba(255,255,255,.06);border-radius:8px;text-align:center">
+<h3 style="color:#fbd38d;margin-bottom:12px">🔄 游戏完整流程</h3>
+<div style="font-size:.9em;line-height:2;opacity:.9">
+<strong>🏠 首页</strong> → 选择案例 → <strong>📝 知识问答（前测）</strong> → 阅读药品资料 →<br>
+<strong>🔵 第一轮谈判</strong>（旁白引入 → 药企报价 → <span style="color:#feb2b2">玩家3选1</span> → 药企回应） →<br>
+<strong>📞 来电事件</strong>（语音播放 + 文字展示） →<br>
+<strong>🟡 第二轮谈判</strong>（旁白引入 → 药企再报价 → <span style="color:#feb2b2">玩家2-3选1</span> → 药企回应） →<br>
+<strong>✉️ 底价信封揭晓</strong>（最终价 vs 医保局底价 → 成功/破裂） →<br>
+<strong>📊 谈判结果</strong>（结果面板 + 现实对比 + 深度阅读） → <strong>📝 知识问答（后测）</strong> → 生成分享卡片
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="footer">
+<p>国家医保谈判 · 沉浸式互动新闻游戏 — 对话剧情树 v2.0（含价格结转逻辑）</p>
+<p>生成日期：2026年7月2日 · 用于医保局审阅</p>
+</div>
+</body>
+</html>
