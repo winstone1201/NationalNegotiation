@@ -219,11 +219,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;b
 <div class="connector"><span class="connector-arrow">▼</span></div>
 
 <div class="node-row"><div class="node node-pharma"><span class="node-tag tag-pharma">药企代表 · 诺华制药</span><div class="node-text"><strong>"紧急和总部沟通后，价格降到8万元/针。这是根据中国特殊情况争取到的最大让步。低于这个价格，每打一针都在亏损——全球没有任何一个市场有这样的先例。"</strong></div></div></div>
-<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">玩家选择（2选1）</span></div>
+<div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">玩家选择（3选1）</span></div>
 
 <div class="choice-grid">
-<div class="choice-card"><span class="choice-type type-pressure">A · 施压</span><div class="choice-label">「守住底线（高风险）」</div><div class="choice-text">"8万还是太高了。如果你不能做到6万以下，我今天就终止谈判。1200个家庭没有后路可退——我也没有。"</div><div class="choice-effect">💰 -28,000</div></div>
-<div class="choice-card"><span class="choice-type type-empathy">B · 共情</span><div class="choice-label">「寻求合作（稳健）」</div><div class="choice-text">"刚才一位SMA妈妈给我打了电话。她3岁的孩子还不能坐起来。她说：'我们不要免费的，只要一个希望。'如果你让这个药变得可及，我会推动建立患者援助计划。"</div><div class="choice-effect">💰 -25,000</div></div>
+<div class="choice-card"><span class="choice-type type-pressure">A · 施压</span><div class="choice-label">「守住底线（高风险）」</div><div class="choice-text">"8万还是太高了。如果你不能做到6万以下，我今天就终止谈判。1200个家庭没有后路可退——我也没有。"</div><div class="choice-effect">💰 -28,000 → 52,000 ✅</div></div>
+<div class="choice-card"><span class="choice-type type-empathy">B · 共情</span><div class="choice-label">「寻求合作（情感牌）」</div><div class="choice-text">"刚才一位SMA妈妈给我打了电话。她3岁的孩子还不能坐起来。她说：'我们不要免费的，只要一个希望。'如果你让这个药变得可及，我会推动建立患者援助计划——让这个药真正用到每个需要的孩子身上。"</div><div class="choice-effect">💰 -24,000 → 56,000 ❌</div></div>
 </div>
 
 <div class="connector"><span class="connector-arrow">▼</span><span class="connector-label">✉️ 底价信封揭晓</span></div>
@@ -231,14 +231,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;b
 
 <table class="outcome-table">
 <tr><th>路径</th><th>R1选择</th><th>R1结果</th><th>R2起始<br>(结转后)</th><th>R2选择</th><th>R2降价</th><th>最终价</th><th>结果</th></tr>
-<tr><td>1A→2A</td><td>施压</td><td>105,000</td><td>80,000</td><td>施压</td><td>-28,000</td><td><strong>52,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
-<tr><td>1A→2B</td><td>施压</td><td>105,000</td><td>80,000</td><td>共情</td><td>-25,000</td><td><strong>55,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
-<tr><td>1B→2A</td><td>共情</td><td>112,000</td><td>80,000</td><td>施压</td><td>-28,000</td><td><strong>52,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
-<tr><td>1B→2B</td><td>共情</td><td>112,000</td><td>80,000</td><td>共情</td><td>-25,000</td><td><strong>55,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
-<tr><td>1C→2A</td><td>技术</td><td>108,000</td><td>80,000</td><td>施压</td><td>-28,000</td><td><strong>52,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
-<tr><td>1C→2B</td><td>技术</td><td>108,000</td><td>80,000</td><td>共情</td><td>-25,000</td><td><strong>55,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
-</table>
-<div class="note-box">📊 <strong>6条路径全部成功（100%）！</strong>关键在于R2的价格结转机制：无论R1砍到多少，R2起始价被80,000封顶。R2施压（-28,000→52,000）和共情（-25,000→55,000）都在底价之内。但注意：R2共情刚好压线55,000=底价，非常惊险。真实谈判中张劲妮最终谈到33,000元，游戏的底价设定相对保守。</div>
+	<tr><td>1A→2A</td><td>施压</td><td>105,000</td><td>80,000</td><td>施压</td><td>-28,000</td><td><strong>52,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+	<tr><td>1A→2B</td><td>施压</td><td>105,000</td><td>80,000</td><td>共情</td><td>-24,000</td><td><strong>56,000</strong></td><td class="outcome-fail">❌ 破裂</td></tr>
+	<tr><td>1A→2C</td><td>施压</td><td>105,000</td><td>80,000</td><td>技术</td><td>-27,000</td><td><strong>53,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+	<tr><td>1B→2A</td><td>共情</td><td>112,000</td><td>80,000</td><td>施压</td><td>-28,000</td><td><strong>52,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+	<tr><td>1B→2B</td><td>共情</td><td>112,000</td><td>80,000</td><td>共情</td><td>-24,000</td><td><strong>56,000</strong></td><td class="outcome-fail">❌ 破裂</td></tr>
+	<tr><td>1B→2C</td><td>共情</td><td>112,000</td><td>80,000</td><td>技术</td><td>-27,000</td><td><strong>53,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+	<tr><td>1C→2A</td><td>技术</td><td>108,000</td><td>80,000</td><td>施压</td><td>-28,000</td><td><strong>52,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+	<tr><td>1C→2B</td><td>技术</td><td>108,000</td><td>80,000</td><td>共情</td><td>-24,000</td><td><strong>56,000</strong></td><td class="outcome-fail">❌ 破裂</td></tr>
+	<tr><td>1C→2C</td><td>技术</td><td>108,000</td><td>80,000</td><td>技术</td><td>-27,000</td><td><strong>53,000</strong></td><td class="outcome-pass">✅ 成功</td></tr>
+	</table>
+<div class="note-box">📊 <strong>9条路径中6条成功（67%）——R2选共情（-24,000→56,000）必定失败。共情降价力度最小，在底价55,000面前差了一口气。R2必须用施压（-28,000→52,000）或技术策略（国际对标，-27,000→53,000）才能突破底价。！</strong>关键在于R2的价格结转机制：无论R1砍到多少，R2起始价被80,000封顶。R2施压（-28,000→52,000）和技术·国际对标（-27,000→53,000）都能突破底价。但共情策略（-24,000→56,000）差1,000元——情感牌在这个案例中需要搭配数据才有效。真实谈判中张劲妮最终谈到33,000元。</div>
 </div>
 </div>
 </div>
@@ -330,19 +333,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;b
 <table class="outcome-table" style="color:#fff">
 <tr><th style="background:#4a5568">案例</th><th style="background:#4a5568">难度</th><th style="background:#4a5568">路径数</th><th style="background:#4a5568">成功路径</th><th style="background:#4a5568">成功率</th><th style="background:#4a5568">关键机制</th><th style="background:#4a5568">现实结果</th></tr>
 <tr><td>案例一 · 慢病续约（立普妥/辉瑞）</td><td>⭐ 入门</td><td>9</td><td>7</td><td>78%</td><td>R2起始价=min(R1,4.8)</td><td>3.0元（降82%）</td></tr>
-<tr><td>案例二 · 罕见病（诺西那生钠/诺华）</td><td>⭐⭐ 中等</td><td>6</td><td>6</td><td style="background:#c6f6d5;color:#1a202c;font-weight:700">100%</td><td>R2起始价=min(R1,80,000)</td><td>33,000元（降72%）</td></tr>
+<tr><td>案例二 · 罕见病（诺西那生钠/诺华）</td><td>⭐⭐ 中等</td><td>9</td><td>6</td><td>67%</td><td>R2起始价=min(R1,80,000)</td><td>33,000元（降72%）</td></tr>
 <tr><td>案例三 · 肿瘤靶向药（艾瑞卡/PD-1）</td><td>⭐⭐⭐ 困难</td><td>9</td><td>6</td><td>67%</td><td>R2起始价=min(R1,72,000)</td><td>42,000元（降57%）</td></tr>
-<tr style="font-weight:700;background:rgba(255,255,255,.1)"><td>合计</td><td></td><td>24</td><td>19</td><td>79%</td><td></td><td></td></tr>
+<tr style="font-weight:700;background:rgba(255,255,255,.1)"><td>合计</td><td></td><td>27</td><td>19</td><td>70%</td><td></td><td></td></tr>
 </table>
 
 <div style="margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
 <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:16px">
 <h4 style="color:#fbd38d">🎮 游戏设计理念</h4>
-<p style="font-size:.9em;opacity:.85;margin-top:8px">案例一（入门）78%成功率——让玩家建立信心。案例二（中等）100%成功率——关键教学点在于R2的"价格结转"机制。案例三（困难）67%成功率——R2选共情必定失败，必须用数据或硬谈判。游戏结束时展示真实结果作为教学对比。</p>
+<p style="font-size:.9em;opacity:.85;margin-top:8px">案例一（入门）78%成功率——让玩家建立信心。案例二（中等）67%成功率——R2共情策略必定失败，需要施压或技术策略才能成功。案例三（困难）67%成功率——R2选共情必定失败，必须用数据或硬谈判。游戏结束时展示真实结果作为教学对比。</p>
 </div>
 <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:16px">
 <h4 style="color:#9ae6b4">📖 核心教学点</h4>
-<p style="font-size:.9em;opacity:.85;margin-top:8px"><strong>价格结转机制：</strong>R2起始价 = min(R1砍价结果, R2开局报价)。这意味着R1的砍价成果会被保留到R2。特别在案例二中，这个机制使得所有6条路径都能成功——R2开局80,000的"天花板"给了R1足够的操作空间。</p>
+<p style="font-size:.9em;opacity:.85;margin-top:8px"><strong>价格结转机制：</strong>R2起始价 = min(R1砍价结果, R2开局报价)。这意味着R1的砍价成果会被保留到R2。特别在案例二中，R2有3个策略选项：施压(-28,000)和技术·国际对标(-27,000)可以成功，但共情(-24,000)降价力度不足会失败——玩家需要在情感牌和数据牌之间做出权衡。</p>
 </div>
 <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:16px">
 <h4 style="color:#bee3f8">🔀 三种策略维度</h4>
