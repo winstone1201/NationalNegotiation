@@ -84,13 +84,14 @@
 <script setup>
 import { ref, watch, onUnmounted, computed } from 'vue'
 import gsap from 'gsap'
+import { getAudioPath } from '@/utils/audioPath'
 
 const props = defineProps({
   visible: { type: Boolean, default: false },
   callerName: { type: String, default: '患儿家属' },
   callerRelation: { type: String, default: 'SMA患儿母亲' },
   message: { type: String, default: '医生……我们什么时候能用上药？孩子已经等不起了……' },
-  audioSrc: { type: String, default: '/audio/mother-message.mp3' }
+  audioSrc: { type: String, default: getAudioPath('mother-message.mp3') }
 })
 
 const emit = defineEmits(['accepted', 'dismissed'])
@@ -119,7 +120,7 @@ const callDuration = computed(() => {
 
 function startRingtone() {
   try {
-    ringtoneAudio = new Audio('/audio/wechat-ringtone.mp3')
+    ringtoneAudio = new Audio(getAudioPath('wechat-ringtone.mp3'))
     ringtoneAudio.volume = 0.7
     ringtoneAudio.loop = true
 

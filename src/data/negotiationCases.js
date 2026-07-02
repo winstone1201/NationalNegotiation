@@ -11,6 +11,7 @@ import { caseDrugInfoMap, budgetDataMap } from './caseDrugInfo'
 import { case1Dialogue } from './case1-rare-disease'
 import { case2Dialogue } from './case2-tumor-drug'
 import { case3Dialogue } from './case3-chronic-renewal'
+import { getAudioPath } from '@/utils/audioPath'
 
 export const negotiationCases = {
   'rare-disease-1': {
@@ -54,7 +55,7 @@ export const negotiationCases = {
       callerName: 'SMA患儿母亲',
       callerRelation: '患儿家属',
       message: '谈判官您好……我的孩子今年3岁了，医生说如果能用上这个药，他就有可能站起来走路。我们知道药很贵，但请无论如何帮帮我们。',
-      audioSrc: '/audio/mother-message.mp3'
+      audioSrc: getAudioPath('mother-message.mp3')
     }
   },
 
@@ -98,7 +99,7 @@ export const negotiationCases = {
       callerName: '药物经济学专家组',
       callerRelation: '场外技术支持',
       message: '谈判官，我们刚完成了艾瑞卡在全球7个主要市场的定价模型交叉验证。德国4.8万、日本5.2万、澳大利亚4.5万——这是他们自己的全球定价体系。结合中国人均GDP调整，4.8万是站得住脚的底线。注意他们可能会拿印度仿制药说事，但那是自愿许可的特殊情况，不能作为参照。祝你谈判顺利。',
-      audioSrc: '/audio/expert-call.mp3'
+      audioSrc: getAudioPath('expert-call.mp3')
     }
   },
 
@@ -142,7 +143,7 @@ export const negotiationCases = {
       callerName: '乡镇卫生院医生',
       callerRelation: '基层医疗机构',
       message: '谈判官您好，我是湖南一个乡镇卫生院的。我们这里很多老人家血脂高，立普妥是控制得最稳定的药。如果价格能再降一点，我们就能给更多村民开这个药了。拜托您了。',
-      audioSrc: '/audio/doctor-call.mp3'
+      audioSrc: getAudioPath('doctor-call.mp3')
     }
   }
 }
